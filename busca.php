@@ -7,9 +7,7 @@ $transfer = $_POST['transfer'] ?? '';
 if ($transfer !== '') {
 	try {
 
-		$start = microtime(true);
 		$conn = getConnection();
-		echo "Conexión: " . (microtime(true) - $start) . " segundos<br>";
 
 		$sql = "WITH t AS (
 							SELECT cp.IdProducto, td.Cantidad
@@ -36,6 +34,9 @@ if ($transfer !== '') {
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+		// Extraemos los idProducto
+    $idProductos = array_column($result, 'idproducto');
+
 	} catch (PDOException $e) {
 		die("Error en la base de datos: " . $e->getMessage());
 	} finally {
@@ -52,6 +53,7 @@ if ($transfer !== '') {
 	<title>Resultados del Transfer</title>
 </head>
 <body>
+
 	<h1>Resultados del Transfer <?= htmlspecialchars($transfer) ?></h1>
 
 	<?php if (!empty($result)): ?>
@@ -67,9 +69,10 @@ if ($transfer !== '') {
 			<?php endforeach; ?>
 		</table>
 		<br>
-		<form action="chapuza.php" method="post">
-			<input type="hidden" name="transfer" id="chapuza" required><br><br>
-			<input type="submit" value="Realizar Chapuza">
+		<form action="comprueba.php" method="post">
+			<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>"><br><br>
+			<input type="hidden" name="idProductos" value="<?= implode(',', $idProductos) ?>">
+			<input type="submit" value="Comprobar Transfer">
 		</form>
 		
 		<br>
@@ -78,7 +81,7 @@ if ($transfer !== '') {
 	<?php elseif ($transfer !== ''): ?>
 		<p>No se encontraron resultados para el transfer ingresado.</p>
 		<form action="verifica.php" method="post">
-			<input type="hidden" name="transfer" id="verifica" required><br><br>
+			<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>" required><br><br>
 			<input type="submit" value="Verificar Transfer">
 		</form>
 		<br>
@@ -86,9 +89,5 @@ if ($transfer !== '') {
 
 	<?php endif; ?>
 
-	<script>
-		const destino = document.getElementById('verifica');
-		destino.value = "<?= htmlspecialchars($transfer) ?>";
-	</script>
 </body>
 </html>

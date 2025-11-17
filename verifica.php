@@ -43,7 +43,7 @@ try {
 	<h1>Resultados del Transfer <?= htmlspecialchars($transfer) ?></h1>
 
 	<?php if (!empty($result)): ?>
-		<h2>Productos con faltante de stock:</h2>
+		<h2>Productos con stock:</h2>
 		<table cellpadding="5" cellspacing="0">
 			<tr>
 				<th>CantidadFacturada</th>
