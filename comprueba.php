@@ -16,13 +16,12 @@ if ($transfer !== '') {
 		$sql = "SELECT cantidad, cantidadFacturada, IdProducto, Descripcion
 						FROM ACO_Transfer_Cabecera tc
 						INNER JOIN ACO_Transfer_Detalle td on td.IdTransfer = tc.IdTransfer
-						WHERE NumeroTransfer = :transfer 
+						WHERE NumeroTransfer = ?
 						AND fecha > '20250701'
 						AND td.IdProducto IN ($placeholders)";
 
 		$stmt = $conn->prepare($sql);
-		$stmt->bindParam(':transfer', $transfer);
-		$stmt->execute($idProductos);
+		$stmt->execute(array_merge([$transfer], $idProductos));
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 	} catch (PDOException $e) {
@@ -53,7 +52,7 @@ if ($transfer !== '') {
 				<th>IdProducto</th>
 				<th>Descripción</th>
 			</tr>
-			<?php foreach ($detalleProductos as $row): ?>
+			<?php foreach ($result as $row): ?>
 				<tr>
 					<td><?= htmlspecialchars($row['cantidad']) ?></td>
 					<td><?= htmlspecialchars($row['cantidadFacturada']) ?></td>

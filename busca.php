@@ -37,6 +37,20 @@ if ($transfer !== '') {
 		// Extraemos los idProducto
     $idProductos = array_column($result, 'idproducto');
 
+		$placeholders = implode(',', array_fill(0, count($idProductos), '?'));
+
+		$sql2 = "SELECT cantidad, cantidadFacturada, IdProducto, Descripcion
+						FROM ACO_Transfer_Cabecera tc
+						INNER JOIN ACO_Transfer_Detalle td on td.IdTransfer = tc.IdTransfer
+						WHERE NumeroTransfer = ?
+						AND fecha > '20250701'
+						AND td.IdProducto IN ($placeholders)";
+
+		$stmt2 = $conn->prepare($sql2);
+		$stmt2->execute(array_merge([$transfer], $idProductos));
+		$result2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+
 	} catch (PDOException $e) {
 		die("Error en la base de datos: " . $e->getMessage());
 	} finally {
@@ -69,12 +83,27 @@ if ($transfer !== '') {
 			<?php endforeach; ?>
 		</table>
 		<br>
-		<form action="comprueba.php" method="post">
+		<table cellpadding="5" cellspacing="0">
+			<tr>
+				<th>Cantidad</th>
+				<th>Cantidad Facturada</th>
+				<th>IdProducto</th>
+				<th>Descripción</th>
+			</tr>
+			<?php foreach ($result2 as $row2): ?>
+				<tr>
+					<td><?= htmlspecialchars($row2['cantidad']) ?></td>
+					<td><?= htmlspecialchars($row2['cantidadFacturada']) ?></td>
+					<td><?= htmlspecialchars($row2['IdProducto']) ?></td>
+					<td><?= htmlspecialchars($row2['Descripcion']) ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+		<form action="procesa.php" method="post">
 			<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>"><br><br>
 			<input type="hidden" name="idProductos" value="<?= implode(',', $idProductos) ?>">
-			<input type="submit" value="Comprobar Transfer">
-		</form>
-		
+			<input type="submit" value="Procesar Transfer">
+		</form>		
 		<br>
 		<a href="index.php"><button>Volver</button></a>
 
