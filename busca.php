@@ -37,18 +37,23 @@ if ($transfer !== '') {
 		// Extraemos los idProducto
     $idProductos = array_column($result, 'idproducto');
 
-		$placeholders = implode(',', array_fill(0, count($idProductos), '?'));
+		if (empty($idProductos)){
 
-		$sql2 = "SELECT cantidad, cantidadFacturada, IdProducto, Descripcion
-						FROM ACO_Transfer_Cabecera tc
-						INNER JOIN ACO_Transfer_Detalle td on td.IdTransfer = tc.IdTransfer
-						WHERE NumeroTransfer = ?
-						AND fecha > '20250701'
-						AND td.IdProducto IN ($placeholders)";
+		} else {
 
-		$stmt2 = $conn->prepare($sql2);
-		$stmt2->execute(array_merge([$transfer], $idProductos));
-		$result2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+			$placeholders = implode(',', array_fill(0, count($idProductos), '?'));
+
+			$sql2 = "SELECT cantidad, cantidadFacturada, IdProducto, Descripcion
+							FROM ACO_Transfer_Cabecera tc
+							INNER JOIN ACO_Transfer_Detalle td on td.IdTransfer = tc.IdTransfer
+							WHERE NumeroTransfer = ?
+							AND fecha > '20250701'
+							AND td.IdProducto IN ($placeholders)";
+
+			$stmt2 = $conn->prepare($sql2);
+			$stmt2->execute(array_merge([$transfer], $idProductos));
+			$result2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+		}
 
 
 	} catch (PDOException $e) {
@@ -83,6 +88,8 @@ if ($transfer !== '') {
 			<?php endforeach; ?>
 		</table>
 		<br>
+	<?php endif; ?>
+	<?php if (!empty($result2)): ?>
 		<table cellpadding="5" cellspacing="0">
 			<tr>
 				<th>Cantidad</th>
