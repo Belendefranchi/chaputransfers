@@ -24,7 +24,7 @@ if ($transfer !== '') {
 							INNER JOIN Deposito D WITH (NOLOCK) ON SPD.IdDeposito = D.IdDeposito
 							WHERE D.HabilitadoFacturacion = 1
 							AND D.Interno = 1
-							AND D.IdFilial = 2
+							--AND D.IdFilial = 2
 							AND D.iddeposito NOT IN (41, 42)
 							AND spd.IdProducto = t.IdProducto
 						) < t.cantidad";
@@ -106,7 +106,7 @@ if ($transfer !== '') {
 				</tr>
 			<?php endforeach; ?>
 		</table>
-		<form action="procesa.php" method="post">
+		<form action="3.procesa.php" method="post">
 			<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>"><br><br>
 			<input type="hidden" name="idProductos" value="<?= implode(',', $idProductos) ?>">
 			<input type="submit" value="Procesar Transfer">
@@ -116,7 +116,7 @@ if ($transfer !== '') {
 
 	<?php elseif ($transfer !== ''): ?>
 		<p>No se encontraron resultados para el transfer ingresado.</p>
-		<form action="verifica.php" method="post">
+		<form action="2.verifica.php" method="post">
 			<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>" required><br><br>
 			<input type="submit" value="Verificar Transfer">
 		</form>

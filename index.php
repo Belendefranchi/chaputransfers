@@ -7,7 +7,7 @@
 </head>
 <body>
   <h1>ChapuTransfers</h1>
-	<form action="busca.php" method="post">
+	<form action="1.busca.php" method="post">
 		<label for="busca">Nro. Transfer:</label>
 		<input type="text" name="transfer" id="busca" required>
 		<br>

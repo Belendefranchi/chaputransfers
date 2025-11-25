@@ -12,7 +12,7 @@ if ($transfer !== '') {
 
 		$conn = getConnection();
 
-		$sql = "UPDATE td SET td.cantidadfacturada = td.cantidad
+		$sql = "UPDATE td SET td.cantidadfacturada = 0
 						FROM ACO_Transfer_Cabecera tc
 						INNER JOIN ACO_Transfer_Detalle td
 							ON td.IdTransfer = tc.IdTransfer
@@ -54,7 +54,7 @@ if ($transfer !== '') {
 
 	<h1>Resultados del Transfer <?= htmlspecialchars($transfer) ?></h1>
 
-	<?php if (!empty($result)): ?>
+	<?php if (!empty($result2)): ?>
 		<h2>Productos procesados:</h2>
 		<table cellpadding="5" cellspacing="0">
 			<tr>
