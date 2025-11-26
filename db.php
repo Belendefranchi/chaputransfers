@@ -1,7 +1,7 @@
 <?php
 function getConnection() {
-  $serverName = '130.120.110.10';
-  $database = 'ACOFAR-PRUEBAS';
+  $serverName = '192.168.10.12';
+  $database = 'ACOFAR';
   $username = 'first';
   $password = 'pramparo';
 

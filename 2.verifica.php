@@ -7,30 +7,32 @@
 </head>
 <body>
 
-	<?php
-	require_once 'db.php';
+<?php
+require_once 'db.php';
 
-	$result = [];
-	//$transfer = $_POST['transfer'] ?? '';
-	$transfers = explode(',', $_POST['transfer']);
+$result = [];
+$transfers = explode(',', $_POST['transfer']);
+$transfers = array_map('intval', $transfers);
 
+if ($transfers !== '') {
 	try {
+
 		$conn = getConnection();
 
-		foreach ($transfers as $tranasfer) {
+		foreach ($transfers as $transfer) {
 
+			$sql = "SELECT
+								CantidadFacturada,cantidad,
+								(SELECT [dbo].[Aco_StockporFilial] (cp.CodigoAlternativo,2)) AS Stock,td.IdProducto
+								FROM ACO_Transfer_Cabecera tc
+								INNER JOIN ACO_Transfer_Detalle td
+									ON td.IdTransfer = tc.IdTransfer
+								INNER JOIN CabeceraProducto cp
+									ON cp.IdProducto = td.IdProducto
+								WHERE NumeroTransfer = :transfer
+								AND fecha > '20250701'";
 
-			$stmt = $conn->prepare("SELECT
-													CantidadFacturada,cantidad,
-													(SELECT [dbo].[Aco_StockporFilial] (cp.CodigoAlternativo,2)) AS Stock,td.IdProducto
-													FROM ACO_Transfer_Cabecera tc
-													INNER JOIN ACO_Transfer_Detalle td
-														ON td.IdTransfer = tc.IdTransfer
-													INNER JOIN CabeceraProducto cp
-														ON cp.IdProducto = td.IdProducto
-													WHERE NumeroTransfer = :transfer
-													AND fecha > '20250701'");
-
+			$stmt = $conn->prepare($sql);
 			$stmt->bindParam(':transfer', $transfer);
 			$stmt->execute();
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,13 +59,10 @@
 					<?php endforeach; ?>
 				</table>
 				<br>
-				<a href="index.php"><button>Volver</button></a>
 
 			<?php elseif ($transfer !== ''): ?>
 				<p>No se encontró transfer.</p>
 				<br>
-				<br>
-				<a href="index.php"><button>Volver</button></a>
 			<?php endif;
 		}
 
@@ -74,13 +73,15 @@
 	} finally {
 			$conn = null;
 	}
+}
+?>
+<br>
+<a href="index.php"><button>Volver</button></a>
 
-	?>
-
-	<script>
-		const origen = document.getElementById('busca');
-		const destino = document.getElementById('verifica');
-		origen.addEventListener('input', () => destino.value = origen.value);
-	</script>
+<script>
+	const origen = document.getElementById('busca');
+	const destino = document.getElementById('verifica');
+	origen.addEventListener('input', () => destino.value = origen.value);
+</script>
 </body>
 </html>
