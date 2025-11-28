@@ -4,6 +4,8 @@ require_once 'db.php';
 $transfer = $_POST['transfer'] ?? '';
 $idProductos = explode(',', $_POST['idProductos']);
 $idProductos = array_map('intval', $idProductos);
+$_SESSION['transfers'] = $transfer;
+$_SESSION['idProductos'][$transfer] = $idProductos;
 
 if ($transfer !== '') {
 	try {
