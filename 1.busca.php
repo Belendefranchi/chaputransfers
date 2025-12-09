@@ -10,16 +10,16 @@
 <?php
 require_once 'db.php';
 session_start();
-//session_unset();
+
+if (isset($_SESSION["idProductos"])) {
+	echo '<pre>';
+	print_r($_SESSION);
+	echo '</pre>';
+}
 
 $result = [];
 $transfers = explode(',', $_POST['transfer']);
 $transfers = array_map('intval', $transfers);
-
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
-
 
 if ($transfers !== '') {
 	try {

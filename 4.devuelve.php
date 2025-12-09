@@ -1,9 +1,16 @@
 <?php
 require_once 'db.php';
+session_start();
 
 $transfer = $_POST['transfer'] ?? '';
 $idProductos = explode(',', $_POST['idProductos']);
 $idProductos = array_map('intval', $idProductos);
+
+if (isset($_SESSION["idProductos"])) {
+	echo '<pre>';
+	print_r($_SESSION);
+	echo '</pre>';
+}
 
 if ($transfer !== '') {
 	try {
@@ -39,6 +46,7 @@ if ($transfer !== '') {
 		die("Error en la base de datos: " . $e->getMessage());
 	} finally {
 		$conn = null;
+		unset($_SESSION['idProductos'][$transfer]);
 	}
 }
 ?>

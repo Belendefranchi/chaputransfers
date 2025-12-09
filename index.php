@@ -6,6 +6,14 @@
 	<title>ChapuTransfers</title>
 </head>
 <body>
+	<?php
+	session_start();
+	if (!empty($_SESSION["idProductos"])) {
+		echo '<pre>';
+		print_r($_SESSION);
+		echo '</pre>';
+	}
+	?>
   <h1>ChapuTransfers</h1>
 	<form action="1.busca.php" method="post">
 		<label for="busca">Nro. Transfer:</label>
