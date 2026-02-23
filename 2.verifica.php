@@ -3,6 +3,15 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+				font-family: Arial, sans-serif;
+				max-width: 600px;
+				margin: 30px auto;
+				padding: 10px;
+		}
+		h2 { text-align: center; }
+	</style>
 	<title>Resultados del Transfer</title>
 </head>
 <body>

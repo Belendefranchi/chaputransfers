@@ -3,6 +3,15 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+				font-family: Arial, sans-serif;
+				max-width: 600px;
+				margin: 30px auto;
+				padding: 10px;
+		}
+		h2 { text-align: center; }
+	</style>
 	<title>Resultados del Transfer</title>
 </head>
 <body>
@@ -18,7 +27,7 @@ if (isset($_SESSION["idProductos"])) {
 }
 
 $result = [];
-$transfers = explode(',', $_POST['transfer']);
+$transfers = explode('.', $_POST['transfer']);
 $transfers = array_map('intval', $transfers);
 
 if ($transfers !== '') {
@@ -61,9 +70,7 @@ if ($transfers !== '') {
 			// Extraemos los idProducto
 			$idProductos = array_column($result, 'idproducto');
 
-			if (empty($idProductos)){
-
-			} else {
+			if (!empty($idProductos)){
 
 				$placeholders = implode(',', array_fill(0, count($idProductos), '?'));
 
@@ -71,7 +78,7 @@ if ($transfers !== '') {
 								FROM ACO_Transfer_Cabecera tc
 								INNER JOIN ACO_Transfer_Detalle td on td.IdTransfer = tc.IdTransfer
 								WHERE NumeroTransfer = ?
-								AND fecha > '20250701'
+								AND fecha > '20260101'
 								AND td.IdProducto IN ($placeholders)";
 
 				$stmt2 = $conn->prepare($sql2);
@@ -90,16 +97,14 @@ if ($transfers !== '') {
 						<th>Stock</th>
 					</tr>
 					<?php foreach ($result as $row): ?>
-						<tr>
-							<td><?= htmlspecialchars($row['idproducto']) ?></td>
-							<td><?= htmlspecialchars($row['Cantidad']) ?></td>
-							<td><?= htmlspecialchars($row['stock']) ?></td>
-						</tr>
+					<tr>
+						<td><?= htmlspecialchars($row['idproducto']) ?></td>
+						<td><?= htmlspecialchars($row['Cantidad']) ?></td>
+						<td><?= htmlspecialchars($row['stock']) ?></td>
+					</tr>
 					<?php endforeach; ?>
 				</table>
 				<br>
-			<?php endif; ?>
-			<?php if (!empty($result2)): ?>
 				<table cellpadding="5" cellspacing="0">
 					<tr>
 						<th>Cantidad</th>
@@ -108,19 +113,19 @@ if ($transfers !== '') {
 						<th>Descripción</th>
 					</tr>
 					<?php foreach ($result2 as $row2): ?>
-						<tr>
-							<td><?= htmlspecialchars($row2['cantidad']) ?></td>
-							<td><?= htmlspecialchars($row2['cantidadFacturada']) ?></td>
-							<td><?= htmlspecialchars($row2['IdProducto']) ?></td>
-							<td><?= htmlspecialchars($row2['Descripcion']) ?></td>
-						</tr>
+					<tr>
+						<td><?= htmlspecialchars($row2['cantidad']) ?></td>
+						<td><?= htmlspecialchars($row2['cantidadFacturada']) ?></td>
+						<td><?= htmlspecialchars($row2['IdProducto']) ?></td>
+						<td><?= htmlspecialchars($row2['Descripcion']) ?></td>
+					</tr>
 					<?php endforeach; ?>
 				</table>
 				<form action="3.procesa.php" method="post">
 					<input type="hidden" name="transfer" value="<?= htmlspecialchars($transfer) ?>"><br><br>
 					<input type="hidden" name="idProductos" value="<?= implode(',', $idProductos) ?>">
 					<input type="submit" value="Procesar Transfer">
-				</form>		
+				</form>
 				<br>
 			<?php elseif ($transfer !== ''): ?>
 				<p>No se encontraron resultados para el transfer ingresado.</p>
