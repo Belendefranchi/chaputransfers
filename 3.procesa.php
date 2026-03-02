@@ -8,10 +8,27 @@ $idProductos = array_map('intval', $idProductos);
 
 $_SESSION['idProductos'][$transfer] = $idProductos;
 
-if (isset($_SESSION["idProductos"])) {
-	echo '<pre>';
-	print_r($_SESSION);
-	echo '</pre>';
+if (!empty($_SESSION['idProductos'])) {
+
+    echo "<ul>";
+
+    foreach ($_SESSION['idProductos'] as $transfer => $productos) {
+
+        echo "<li>";
+        echo "<strong>Transfer:</strong> " . htmlspecialchars($transfer);
+				echo "<br>";
+        echo "<ul>";
+
+        foreach ($productos as $producto) {
+            echo "<li>" . htmlspecialchars($producto) . "</li>";
+        }
+
+        echo "</ul>";
+        echo "</li>";
+				echo "<br>";
+    }
+
+    echo "</ul>";
 }
 
 if ($transfer !== '') {
@@ -50,7 +67,9 @@ if ($transfer !== '') {
 		$conn = null;
 	}
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
