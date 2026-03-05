@@ -20,10 +20,27 @@
 require_once 'db.php';
 session_start();
 
-if (isset($_SESSION["idProductos"])) {
-	echo '<pre>';
-	print_r($_SESSION);
-	echo '</pre>';
+if (!empty($_SESSION['idProductos'])) {
+
+	echo "<ul>";
+
+	foreach ($_SESSION['idProductos'] as $transfer => $productos) {
+
+		echo "<li>";
+		echo "<strong>Transfer:</strong> " . htmlspecialchars($transfer);
+		echo "<br>";
+		echo "<ul>";
+
+		foreach ($productos as $producto) {
+				echo "<li>" . htmlspecialchars($producto) . "</li>";
+		}
+
+		echo "</ul>";
+		echo "</li>";
+		echo "<br>";
+	}
+
+	echo "</ul>";
 }
 
 $result = [];
